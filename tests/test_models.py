@@ -194,3 +194,15 @@ class TestProductModel(unittest.TestCase):
         self.assertEqual(found.count(), count)
         for product in found:
             self.assertEqual(product.category, category)
+
+    def test_serialize(self):
+        """It should Serialize a Product into a dictionary"""
+        product = ProductFactory()
+        json = product.serialize()
+        self.assertEqual(len(json), 6)
+        self.assertEqual(json["id"], product.id)
+        self.assertEqual(json["name"], product.name)
+        self.assertEqual(json["description"], product.description)
+        self.assertEqual(Decimal(json["price"]), product.price)
+        self.assertEqual(json["available"], product.available)
+        self.assertEqual(Category[json["category"]], product.category)
