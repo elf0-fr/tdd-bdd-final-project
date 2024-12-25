@@ -26,7 +26,7 @@ While debugging just these tests it's convenient to use this:
 import os
 import logging
 import unittest
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 from service.models import Product, Category, db, DataValidationError
 from service import app
 from tests.factories import ProductFactory
@@ -218,3 +218,29 @@ class TestProductModel(unittest.TestCase):
         self.assertEqual(new_product.price, product.price)
         self.assertEqual(new_product.available, product.available)
         self.assertEqual(new_product.category, product.category)
+
+    def test_deserialize_with_wrong_type(self):
+        """It should Deserialize a Product from a dictionary"""
+        # Available wrong type
+        product = ProductFactory()
+        json = product.serialize()
+        json["available"] = 2
+        new_product = ProductFactory()
+        self.assertRaises(DataValidationError, new_product.deserialize, json)
+        # Other row wrong type
+        json = product.serialize()
+        json["price"] = "A string"
+        new_product = ProductFactory()
+        self.assertRaises(InvalidOperation, new_product.deserialize, json)
+        # Other row wrong type
+        json = product.serialize()
+        json["category"] = True
+        new_product = ProductFactory()
+        #new_product.deserialize(json)
+        self.assertRaises(DataValidationError, new_product.deserialize, json)
+        # Other row wrong type
+        json = product.serialize()
+        json.pop("name", None)
+        new_product = ProductFactory()
+        #new_product.deserialize(json)
+        self.assertRaises(DataValidationError, new_product.deserialize, json)
