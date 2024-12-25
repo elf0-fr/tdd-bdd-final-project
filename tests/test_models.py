@@ -206,3 +206,15 @@ class TestProductModel(unittest.TestCase):
         self.assertEqual(Decimal(json["price"]), product.price)
         self.assertEqual(json["available"], product.available)
         self.assertEqual(Category[json["category"]], product.category)
+
+    def test_deserialize(self):
+        """It should Deserialize a Product from a dictionary"""
+        product = ProductFactory()
+        json = product.serialize()
+        new_product = ProductFactory()
+        new_product.deserialize(json)
+        self.assertEqual(new_product.name, product.name)
+        self.assertEqual(new_product.description, product.description)
+        self.assertEqual(new_product.price, product.price)
+        self.assertEqual(new_product.available, product.available)
+        self.assertEqual(new_product.category, product.category)
