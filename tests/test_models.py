@@ -195,6 +195,24 @@ class TestProductModel(unittest.TestCase):
         for product in found:
             self.assertEqual(product.category, category)
 
+    def test_find_a_product_by_price(self):
+        """It should Find a Product by Price"""
+        products = ProductFactory.create_batch(10)
+        for product in products:
+            product.create()
+        # with a decimal
+        price = products[0].price
+        count = len([product for product in products if product.price == price])
+        found = Product.find_by_price(price)
+        self.assertEqual(found.count(), count)
+        for product in found:
+            self.assertEqual(product.price, price)
+        # with a string
+        found = Product.find_by_price(str(price))
+        self.assertEqual(found.count(), count)
+        for product in found:
+            self.assertEqual(product.price, price)
+
     def test_serialize(self):
         """It should Serialize a Product into a dictionary"""
         product = ProductFactory()
@@ -220,7 +238,7 @@ class TestProductModel(unittest.TestCase):
         self.assertEqual(new_product.category, product.category)
 
     def test_deserialize_with_wrong_type(self):
-        """It should Deserialize a Product from a dictionary"""
+        """It should raise exception when Deserialize a Product from a dictionary"""
         # Available wrong type
         product = ProductFactory()
         json = product.serialize()
