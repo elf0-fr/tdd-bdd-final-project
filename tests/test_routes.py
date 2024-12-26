@@ -195,6 +195,7 @@ class TestProductRoutes(TestCase):
     # TEST GET List By Name
     # ----------------------------------------------------------
     def test_query_by_name(self):
+        """It should Query Product by name"""
         products = self._create_products(5)
         test_name = products[0].name
         name_count = len([product for product in products if product.name == test_name])
@@ -208,6 +209,25 @@ class TestProductRoutes(TestCase):
         # check the data just to be sure
         for product in data:
             self.assertEqual(product["name"], test_name)
+
+    # ----------------------------------------------------------
+    # TEST GET List By Category
+    # ----------------------------------------------------------
+    def test_query_by_category(self):
+        """It should Query Product by category"""
+        products = self._create_products(5)
+        test_category = products[0].category
+        category_count = len([product for product in products if product.category == test_category])
+        response = self.client.get(
+            BASE_URL, query_string=f"category={test_category.name}"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        self.assertEqual(len(data), category_count)
+        
+        # check the data just to be sure
+        for product in data:
+            self.assertEqual(product["category"], test_category.name)
 
     # ----------------------------------------------------------
     # TEST UPDATE
@@ -251,10 +271,6 @@ class TestProductRoutes(TestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         new_count = self.get_product_count()
         self.assertEqual(new_count, count - 1)
-
-    #
-    # ADD YOUR TEST CASES HERE
-    #
 
     ######################################################################
     # Utility functions
