@@ -254,11 +254,11 @@ class TestProductModel(unittest.TestCase):
         json = product.serialize()
         json["category"] = True
         new_product = ProductFactory()
-        #new_product.deserialize(json)
+        # new_product.deserialize(json)
         self.assertRaises(DataValidationError, new_product.deserialize, json)
         # Other row wrong type
         json = product.serialize()
         json.pop("name", None)
         new_product = ProductFactory()
-        #new_product.deserialize(json)
+        # new_product.deserialize(json)
         self.assertRaises(DataValidationError, new_product.deserialize, json)
