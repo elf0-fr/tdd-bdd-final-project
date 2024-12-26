@@ -22,7 +22,7 @@ Test cases can be run with the following:
   codecov --token=$CODECOV_TOKEN
 
   While debugging just these tests it's convenient to use this:
-    nosetests --stop tests/test_service.py:TestProductService
+    nosetests --stop tests/test_routes.py:TestProductRoutes
 """
 import os
 import logging
@@ -49,7 +49,7 @@ BASE_URL = "/products"
 ######################################################################
 # pylint: disable=too-many-public-methods
 class TestProductRoutes(TestCase):
-    """Product Service tests"""
+    """Product Route tests"""
 
     @classmethod
     def setUpClass(cls):
@@ -162,6 +162,17 @@ class TestProductRoutes(TestCase):
         """It should not Create a Product with wrong Content-Type"""
         response = self.client.post(BASE_URL, data={}, content_type="plain/text")
         self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+
+    def test_get_product(self):
+        """It should Get a single Product"""
+        test_product = self._create_products()[0]
+        response = self.client.get(f"{BASE_URL}/{test_product.id}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        self.assertEqual(data["name"], test_product.name)
+        self.assertEqual(data["description"], test_product.description)
+        self.assertEqual(Decimal(data["price"]), test_product.price)
+
 
     #
     # ADD YOUR TEST CASES HERE
