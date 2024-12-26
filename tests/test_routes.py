@@ -173,6 +173,12 @@ class TestProductRoutes(TestCase):
         self.assertEqual(data["description"], test_product.description)
         self.assertEqual(Decimal(data["price"]), test_product.price)
 
+    def test_get_product_with_wrong_id(self):
+        """It should not Get a Product with wrong id"""
+        response = self.client.get(f"{BASE_URL}/42")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
 
     #
     # ADD YOUR TEST CASES HERE
