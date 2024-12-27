@@ -205,7 +205,7 @@ class TestProductRoutes(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         data = response.get_json()
         self.assertEqual(len(data), name_count)
-        
+
         # check the data just to be sure
         for product in data:
             self.assertEqual(product["name"], test_name)
@@ -224,7 +224,7 @@ class TestProductRoutes(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         data = response.get_json()
         self.assertEqual(len(data), category_count)
-        
+
         # check the data just to be sure
         for product in data:
             self.assertEqual(product["category"], test_category.name)
@@ -253,7 +253,7 @@ class TestProductRoutes(TestCase):
         response = self.client.put(f"{BASE_URL}/{test_product.id}", json=test_product.serialize())
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         data = response.get_json()
-        self.assertIn(f"was not found.", data["message"])
+        self.assertIn("was not found.", data["message"])
 
     # ----------------------------------------------------------
     # TEST DELETE
